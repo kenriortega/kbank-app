@@ -5,18 +5,21 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.org/kbank/domain"
+	"github.org/kbank/service"
 )
 
 func Start() {
 
 	r := mux.NewRouter()
 
+	// wiring
+	ch := CustomerHandler{
+		service: service.NewCustomerService(domain.NewCustomerRepositoryStub()),
+	}
 	// define routes
-	r.HandleFunc("/greet", greet).Methods(http.MethodGet)
-	r.HandleFunc("/customers", getAllCustomers).Methods(http.MethodGet)
-	r.HandleFunc("/customers", createCustomer).Methods(http.MethodPost)
-	r.HandleFunc("/customers/{customerID:[0-9]+}", getCustomerByID).Methods(http.MethodGet)
+	r.HandleFunc("/customers", ch.getAllCustomers).Methods(http.MethodGet)
 
-	// starting smuxer
+	// starting server
 	log.Fatal(http.ListenAndServe(":8000", r))
 }
