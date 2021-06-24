@@ -2,8 +2,8 @@ package app
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
+	"strings"
 
 	"github.org/kbank/service"
 )
@@ -21,9 +21,19 @@ type CustomerHandler struct {
 func (ch *CustomerHandler) getAllCustomers(w http.ResponseWriter, r *http.Request) {
 	customers, err := ch.service.GetAllConstumer()
 	if err != nil {
-		log.Fatalln(err)
+		if strings.Contains(err.Message, "no documents") {
+			writeResponse(w, err.Code, err)
+		}
+	} else {
+		writeResponse(w, http.StatusOK, customers)
 	}
 
+}
+
+func writeResponse(w http.ResponseWriter, code int, data interface{}) {
+	w.WriteHeader(code)
 	w.Header().Add("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(customers)
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		panic(err)
+	}
 }
