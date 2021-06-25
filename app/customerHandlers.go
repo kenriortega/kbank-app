@@ -29,7 +29,5 @@ func (ch *CustomerHandler) getAllCustomers(w http.ResponseWriter, r *http.Reques
 func writeResponse(w http.ResponseWriter, code int, data interface{}) {
 	w.WriteHeader(code)
 	w.Header().Add("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(data); err != nil {
-		panic(err)
-	}
+	json.NewEncoder(w).Encode(data)
 }
