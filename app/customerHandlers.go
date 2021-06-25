@@ -8,18 +8,14 @@ import (
 	"github.org/kbank/service"
 )
 
-type Customer struct {
-	Name    string `json:"full_name"`
-	City    string `json:"city"`
-	Zipcode string `json:"zip_code"`
-}
-
 type CustomerHandler struct {
 	service service.CustomerService
 }
 
 func (ch *CustomerHandler) getAllCustomers(w http.ResponseWriter, r *http.Request) {
-	customers, err := ch.service.GetAllConstumer()
+
+	status := r.URL.Query().Get("status")
+	customers, err := ch.service.GetAllConstumer(status)
 	if err != nil {
 		if strings.Contains(err.Message, "no documents") {
 			writeResponse(w, err.Code, err)
