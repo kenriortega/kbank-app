@@ -1,14 +1,28 @@
 package domain
 
-import "github.org/kbank/errs"
+import (
+	"github.org/kbank/dto"
+	"github.org/kbank/errs"
+)
 
 type Customer struct {
-	ID          string `json:"_id" bson:"_id"`
-	Name        string `json:"name" bson:"name"`
-	City        string `json:"city" bson:"city"`
-	Zipcode     string `json:"zip_code" bson:"zip_code"`
-	DateofBirth string `json:"date_of_birth" bson:"date_of_birth"`
-	Status      string `json:"status" bson:"status"`
+	ID          string `bson:"_id"`
+	Name        string `bson:"name"`
+	City        string `bson:"city"`
+	Zipcode     string `bson:"zip_code"`
+	DateofBirth string `bson:"date_of_birth"`
+	Status      string `bson:"status"`
+}
+
+func (c Customer) ToDto() dto.CustomerResponse {
+	return dto.CustomerResponse{
+		ID:          c.ID,
+		Name:        c.Name,
+		City:        c.City,
+		Zipcode:     c.Zipcode,
+		DateofBirth: c.DateofBirth,
+		Status:      c.Status,
+	}
 }
 
 type CustomerRepository interface {
