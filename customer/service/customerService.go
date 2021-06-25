@@ -1,8 +1,8 @@
-package service
+package customer
 
 import (
-	"github.org/kbank/domain"
-	"github.org/kbank/dto"
+	domain "github.org/kbank/customer/domain"
+	dto "github.org/kbank/customer/dto"
 	"github.org/kbank/errs"
 )
 

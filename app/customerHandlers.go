@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.org/kbank/service"
+	service "github.org/kbank/customer/service"
 )
 
 type CustomerHandler struct {

@@ -1,4 +1,4 @@
-package dto
+package customer
 
 type CustomerResponse struct {
 	ID          string `json:"_id" `

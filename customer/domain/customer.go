@@ -1,7 +1,7 @@
-package domain
+package customer
 
 import (
-	"github.org/kbank/dto"
+	dto "github.org/kbank/customer/dto"
 	"github.org/kbank/errs"
 )
 

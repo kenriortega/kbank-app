@@ -7,9 +7,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
-	"github.org/kbank/domain"
+	domain "github.org/kbank/customer/domain"
+	service "github.org/kbank/customer/service"
 	"github.org/kbank/logger"
-	"github.org/kbank/service"
 )
 
 func Start() {
