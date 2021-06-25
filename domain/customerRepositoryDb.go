@@ -2,9 +2,11 @@ package domain
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"github.org/kbank/errs"
+	"github.org/kbank/logger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -24,14 +26,20 @@ type CustomerRepositoryDb struct {
 	client *mongo.Client
 }
 
-func (d CustomerRepositoryDb) FindAll() ([]Customer, *errs.AppError) {
-	//Define filter query for fetching specific document from collection
-	filter := bson.D{{}} //bson.D{{}} specifies 'all documents'
+func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError) {
+	var filter bson.D
+	if status == "" {
+		//Define filter query for fetching specific document from collection
+		filter = bson.D{{}} //bson.D{{}} specifies 'all documents'
+	} else {
+		// TODO: make filter query
+	}
 	var customers []Customer
 	collection := d.client.Database(DB).Collection(CUSTOMERS)
 	//Perform Find operation & validate against the error.
 	cur, findError := collection.Find(context.TODO(), filter)
 	if findError != nil {
+		logger.Error(findError.Error())
 		return customers, errs.NewNotFoundError("Customer Not found")
 	}
 	//Map result to slice
@@ -39,6 +47,7 @@ func (d CustomerRepositoryDb) FindAll() ([]Customer, *errs.AppError) {
 		t := Customer{}
 		err := cur.Decode(&t)
 		if err != nil {
+			logger.Error(err.Error())
 			return customers, errs.NewUnexpectedError("Unexpected error on map result")
 		}
 		customers = append(customers, t)
@@ -46,7 +55,7 @@ func (d CustomerRepositoryDb) FindAll() ([]Customer, *errs.AppError) {
 	// once exhausted, close the cursor
 	cur.Close(context.TODO())
 	if len(customers) == 0 {
-
+		logger.Warn(fmt.Sprintf("No documents in the collection %s", CUSTOMERS))
 		return customers, errs.NewNotContentError("no documents")
 	}
 	return customers, nil
@@ -63,11 +72,14 @@ func NewCustomerRepositoryDb() CustomerRepositoryDb {
 		// Connect to MongoDB
 		client, err := mongo.Connect(context.TODO(), clientOptions)
 		if err != nil {
+			logger.Error(err.Error())
+
 			panic(err)
 		}
 		// Check the connection
 		err = client.Ping(context.TODO(), nil)
 		if err != nil {
+			logger.Error(err.Error())
 			panic(err)
 		}
 		clientInstance = client
