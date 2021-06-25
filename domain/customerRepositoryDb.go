@@ -2,7 +2,7 @@ package domain
 
 import (
 	"context"
-	"fmt"
+	"os"
 	"sync"
 
 	"github.org/kbank/errs"
@@ -17,9 +17,8 @@ var mongoOnce sync.Once
 
 //I have used below constants just to hold required database config's.
 const (
-	CONNECTIONSTRING = "mongodb://localhost:27017"
-	DB               = "kbank"
-	CUSTOMERS        = "customers"
+	DB        = "kbank"
+	CUSTOMERS = "customers"
 )
 
 type CustomerRepositoryDb struct {
@@ -55,7 +54,6 @@ func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError
 	// once exhausted, close the cursor
 	cur.Close(context.TODO())
 	if len(customers) == 0 {
-		logger.Warn(fmt.Sprintf("No documents in the collection %s", CUSTOMERS))
 		return customers, errs.NewNotContentError("no documents")
 	}
 	return customers, nil
@@ -68,7 +66,7 @@ func NewCustomerRepositoryDb() CustomerRepositoryDb {
 	//Perform connection creation operation only once.
 	mongoOnce.Do(func() {
 		// Set client options
-		clientOptions := options.Client().ApplyURI(CONNECTIONSTRING)
+		clientOptions := options.Client().ApplyURI(os.Getenv("DATABASE_URL"))
 		// Connect to MongoDB
 		client, err := mongo.Connect(context.TODO(), clientOptions)
 		if err != nil {
