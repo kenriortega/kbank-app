@@ -5,8 +5,8 @@ import (
 	"os"
 	"sync"
 
-	"github.org/kbank/errs"
-	"github.org/kbank/logger"
+	"github.org/kbank/internal/errs"
+	"github.org/kbank/internal/logger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

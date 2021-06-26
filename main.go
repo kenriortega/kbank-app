@@ -3,8 +3,8 @@ package main
 import (
 	"runtime"
 
-	"github.org/kbank/app"
-	"github.org/kbank/logger"
+	api "github.org/kbank/cmd/api"
+	"github.org/kbank/internal/logger"
 )
 
 func init() {
@@ -15,5 +15,5 @@ func init() {
 
 func main() {
 	logger.Info("Starting the applications ...")
-	app.Start()
+	api.Start()
 }

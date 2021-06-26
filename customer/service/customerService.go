@@ -3,7 +3,7 @@ package customer
 import (
 	domain "github.org/kbank/customer/domain"
 	dto "github.org/kbank/customer/dto"
-	"github.org/kbank/errs"
+	"github.org/kbank/internal/errs"
 )
 
 type CustomerService interface {
