@@ -4,11 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
-	"time"
 
 	dto "github.org/kbank/customer/dto"
 	service "github.org/kbank/customer/service"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type CustomerHandler struct {
@@ -31,13 +29,17 @@ func (ch *CustomerHandler) GetAllCustomers(w http.ResponseWriter, r *http.Reques
 
 func (ch *CustomerHandler) CreateCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var customer dto.CustomerRequest
-	_ = json.NewDecoder(r.Body).Decode(&customer)
-	customer.ID = primitive.NewObjectID()
-	customer.CreatedAt = time.Now()
-	customer.UpdatedAt = time.Now()
+	var newCustomer dto.CustomerRequest
+	_ = json.NewDecoder(r.Body).Decode(&newCustomer)
+	result, err := ch.Service.CreateCustomer(newCustomer)
 
-	writeResponse(w, http.StatusCreated, customer)
+	if err != nil {
+		if strings.Contains(err.Message, "no documents") {
+			writeResponse(w, err.Code, err)
+		}
+	} else {
+		writeResponse(w, http.StatusCreated, result)
+	}
 }
 
 func writeResponse(w http.ResponseWriter, code int, data interface{}) {
