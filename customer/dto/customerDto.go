@@ -7,14 +7,14 @@ import (
 )
 
 type CustomerResponse struct {
-	ID          string    `json:"_id" `
-	Name        string    `json:"name"`
-	City        string    `json:"city"`
-	Zipcode     string    `json:"zip_code"`
-	DateofBirth string    `json:"date_of_birth"`
-	Status      string    `json:"status"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID          primitive.ObjectID `json:"_id" `
+	Name        string             `json:"name"`
+	City        string             `json:"city"`
+	Zipcode     string             `json:"zip_code"`
+	DateofBirth string             `json:"date_of_birth"`
+	Status      string             `json:"status"`
+	CreatedAt   time.Time          `json:"created_at"`
+	UpdatedAt   time.Time          `json:"updated_at"`
 }
 
 type CustomerRequest struct {
@@ -23,6 +23,11 @@ type CustomerRequest struct {
 	City        string             `json:"city"`
 	Zipcode     string             `json:"zip_code"`
 	DateofBirth string             `json:"date_of_birth"`
+	Status      string             `json:"status"`
 	CreatedAt   time.Time          `json:"created_at"`
 	UpdatedAt   time.Time          `json:"updated_at"`
+}
+
+type ResultResponse struct {
+	Message string `json:"message"`
 }
