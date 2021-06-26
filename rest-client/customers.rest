@@ -1,1 +1,12 @@
 GET http://localhost:8000/customers
+
+###
+POST http://localhost:8000/customers HTTP/1.1
+content-type: application/json
+
+{
+  "name": "sample",
+  "city": "sd",
+  "zip_code": "23424",
+  "date_of_birth": "2020-02-09"
+}
