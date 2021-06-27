@@ -23,6 +23,16 @@ var InsertOneError = &AppError{
 	Code:    http.StatusBadRequest,
 }
 
+var UpdateError = &AppError{
+	Message: "Unexpected error on update document",
+	Code:    http.StatusBadRequest,
+}
+
+var DeleteOneError = &AppError{
+	Message: "Unexpected error on delete one document",
+	Code:    http.StatusBadRequest,
+}
+
 func NewUnexpectedError(message string) *AppError {
 	return &AppError{
 		Message: message,

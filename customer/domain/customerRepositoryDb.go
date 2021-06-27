@@ -114,7 +114,7 @@ func (d CustomerRepositoryDb) DeleteOne(customerID primitive.ObjectID) (*mongo.D
 
 	if err != nil {
 		logger.Error(err.Error())
-		return nil, errs.InsertOneError
+		return nil, errs.DeleteOneError
 	}
 	//Return success without any error.
 	return result, nil
@@ -131,7 +131,7 @@ func (d CustomerRepositoryDb) DeleteAll() (*mongo.DeleteResult, *errs.AppError) 
 	result, err := collection.DeleteMany(context.TODO(), selector)
 	if err != nil {
 		logger.Error(err.Error())
-		return nil, errs.InsertOneError
+		return nil, errs.DeleteOneError
 	}
 	//Return success without any error.
 	return result, nil
@@ -158,7 +158,7 @@ func (d CustomerRepositoryDb) UpdateStatusByCustomerID(
 
 	if err != nil {
 		logger.Error(err.Error())
-		return nil, errs.InsertOneError
+		return nil, errs.UpdateError
 	}
 	//Return success without any error.
 	return result, nil
