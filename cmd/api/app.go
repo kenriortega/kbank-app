@@ -11,6 +11,9 @@ import (
 	accountDomain "github.org/kbank/account/domain"
 	accountHandler "github.org/kbank/account/handlers"
 	accountService "github.org/kbank/account/service"
+	authDomain "github.org/kbank/auth/domain"
+	authHandler "github.org/kbank/auth/handlers"
+	authService "github.org/kbank/auth/service"
 	customerDomain "github.org/kbank/customer/domain"
 	customerHandler "github.org/kbank/customer/handlers"
 	customerService "github.org/kbank/customer/service"
@@ -37,7 +40,7 @@ func Start() {
 	customersRoutes.HandleFunc("/{customerID}/status", ch.UpdateStatusCustomer).Methods(http.MethodPatch)
 	customersRoutes.HandleFunc("/{customerID}", ch.DeleteCustomer).Methods(http.MethodDelete)
 	customersRoutes.HandleFunc("/{customerID}", ch.GetCustomer).Methods(http.MethodGet)
-	customersRoutes.HandleFunc("/", ch.GetAllCustomers).Methods(http.MethodGet)
+	customersRoutes.HandleFunc("/", Chain(ch.GetAllCustomers, VerifyJWT())).Methods(http.MethodGet)
 	customersRoutes.HandleFunc("/", ch.CreateCustomer).Methods(http.MethodPost)
 	// End Customer service
 
@@ -51,9 +54,19 @@ func Start() {
 	accoutsRoutes.HandleFunc("/", ah.CreateAccount).Methods(http.MethodPost)
 	// End Accounts service
 
+	// define routes for accounts
+	authRepository := authDomain.NewAuthRepositoryDb(mongoDbClient)
+	auh := authHandler.AuthHandler{
+		Service: authService.NewAuthService(authRepository),
+	}
+	authRoutes := r.PathPrefix("/auth").Subrouter()
+	authRoutes.HandleFunc("/register", auh.Register).Methods(http.MethodPost)
+	authRoutes.HandleFunc("/login", auh.Login).Methods(http.MethodPost)
+	// End Accounts service
+
 	// middleware
 	r.Use(LogginMiddleware)
-	r.Use(mux.CORSMethodMiddleware(r))
+	r.Use(CORSMiddleware)
 	// starting server
 	srv := &http.Server{
 		Handler: r,
