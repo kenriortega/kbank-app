@@ -1,7 +1,6 @@
 package customer
 
 import (
-	"fmt"
 	"time"
 
 	domain "github.org/kbank/customer/domain"
@@ -31,7 +30,6 @@ func (s DefaultCustomerService) GetAllConstumer(status string) (response []dto.C
 	}
 	return response, nil
 }
-
 func (s DefaultCustomerService) CreateCustomer(newCustomer dto.CustomerRequest) (result dto.ResultResponse, err *errs.AppError) {
 
 	customer := domain.Customer{
@@ -54,27 +52,51 @@ func (s DefaultCustomerService) CreateCustomer(newCustomer dto.CustomerRequest) 
 
 	return result, nil
 }
-
 func (s DefaultCustomerService) DeleteCustomer(customerID string) (result dto.ResultResponse, err *errs.AppError) {
 
 	customerObjectID, _ := primitive.ObjectIDFromHex(customerID)
-	fmt.Println(customerObjectID)
-	result = dto.ResultResponse{
-		Message: "Customer deleted",
+	rs, err := s.repo.DeleteOne(customerObjectID)
+	if err != nil {
+		result = dto.ResultResponse{
+			Message: "0",
+		}
+		return result, err
 	}
-	return result, nil
+	if rs.DeletedCount == 0 {
+		result = dto.ResultResponse{
+			Message: "0",
+		}
+		return result, err
+	} else {
+		result = dto.ResultResponse{
+			Message: "1",
+		}
+		return result, nil
+	}
 }
 func (s DefaultCustomerService) UpdateCustomerByStatus(customerID string, updateRequest dto.UpdateCustomerRequest) (result dto.ResultResponse, err *errs.AppError) {
 
 	customerObjectID, _ := primitive.ObjectIDFromHex(customerID)
 	updateRequest.ID = customerObjectID
 	updateRequest.UpdatedAt = time.Now()
-
-	fmt.Println(updateRequest)
-	result = dto.ResultResponse{
-		Message: "Customer Updated",
+	rs, err := s.repo.UpdateStatusByCustomerID(updateRequest.ID, updateRequest.Status, updateRequest.UpdatedAt)
+	if err != nil {
+		result = dto.ResultResponse{
+			Message: "0",
+		}
+		return result, err
 	}
-	return result, nil
+	if rs.ModifiedCount == 0 {
+		result = dto.ResultResponse{
+			Message: "0",
+		}
+		return result, err
+	} else {
+		result = dto.ResultResponse{
+			Message: "1",
+		}
+		return result, nil
+	}
 }
 
 func NewCustomerService(repository domain.CustomerRepository) DefaultCustomerService {
