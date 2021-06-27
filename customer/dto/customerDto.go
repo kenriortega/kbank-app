@@ -28,6 +28,12 @@ type CustomerRequest struct {
 	UpdatedAt   time.Time          `json:"updated_at"`
 }
 
+type UpdateCustomerRequest struct {
+	ID        primitive.ObjectID `json:"_id"`
+	Status    string             `json:"status"`
+	UpdatedAt time.Time          `json:"updated_at"`
+}
+
 type ResultResponse struct {
 	Message string `json:"message"`
 }

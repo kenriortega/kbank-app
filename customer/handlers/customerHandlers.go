@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	dto "github.org/kbank/customer/dto"
 	service "github.org/kbank/customer/service"
 	"github.org/kbank/internal/errs"
@@ -39,6 +40,32 @@ func (ch *CustomerHandler) CreateCustomer(w http.ResponseWriter, r *http.Request
 		}
 	} else {
 		writeResponse(w, http.StatusCreated, result)
+	}
+}
+
+// TODO: Check work flow
+func (ch *CustomerHandler) UpdateStatusCustomer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	var updateCustomerRequest dto.UpdateCustomerRequest
+	_ = json.NewDecoder(r.Body).Decode(&updateCustomerRequest)
+	result, err := ch.Service.UpdateCustomerByStatus(params["customerID"], updateCustomerRequest)
+	if err != nil {
+		writeResponse(w, err.Code, err)
+	} else {
+		writeResponse(w, http.StatusAccepted, result)
+	}
+}
+
+// TODO: Check work flow
+func (ch *CustomerHandler) DeleteCustomer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	result, err := ch.Service.DeleteCustomer(params["customerID"])
+	if err != nil {
+		writeResponse(w, err.Code, err)
+	} else {
+		writeResponse(w, http.StatusAccepted, result)
 	}
 }
 

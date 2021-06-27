@@ -10,3 +10,15 @@ content-type: application/json
   "zip_code": "23424",
   "date_of_birth": "2020-02-09"
 }
+
+###
+DELETE http://localhost:8000/customers/60d7955d6512c935b5e8d81c
+content-type: application/json
+
+###
+PATCH http://localhost:8000/customers/60d7955d6512c935b5e8d81c/status
+content-type: application/json
+
+{
+  "status": "active"
+}

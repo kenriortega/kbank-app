@@ -1,14 +1,20 @@
 package customer
 
 import (
+	"fmt"
+	"time"
+
 	domain "github.org/kbank/customer/domain"
 	dto "github.org/kbank/customer/dto"
 	"github.org/kbank/internal/errs"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type CustomerService interface {
 	GetAllConstumer(string) ([]dto.CustomerResponse, *errs.AppError)
 	CreateCustomer(dto.CustomerRequest) (dto.ResultResponse, *errs.AppError)
+	DeleteCustomer(string) (dto.ResultResponse, *errs.AppError)
+	UpdateCustomerByStatus(string, dto.UpdateCustomerRequest) (dto.ResultResponse, *errs.AppError)
 }
 
 type DefaultCustomerService struct {
@@ -34,9 +40,39 @@ func (s DefaultCustomerService) CreateCustomer(newCustomer dto.CustomerRequest) 
 		Zipcode:     newCustomer.Zipcode,
 		DateofBirth: newCustomer.DateofBirth,
 	}
-	s.repo.CreateOne(customer)
+
+	_, err = s.repo.CreateOne(customer)
 	result = dto.ResultResponse{
-		Message: "Customer created",
+		Message: "1",
+	}
+	if err != nil {
+		result = dto.ResultResponse{
+			Message: "0",
+		}
+		return result, err
+	}
+
+	return result, nil
+}
+
+func (s DefaultCustomerService) DeleteCustomer(customerID string) (result dto.ResultResponse, err *errs.AppError) {
+
+	customerObjectID, _ := primitive.ObjectIDFromHex(customerID)
+	fmt.Println(customerObjectID)
+	result = dto.ResultResponse{
+		Message: "Customer deleted",
+	}
+	return result, nil
+}
+func (s DefaultCustomerService) UpdateCustomerByStatus(customerID string, updateRequest dto.UpdateCustomerRequest) (result dto.ResultResponse, err *errs.AppError) {
+
+	customerObjectID, _ := primitive.ObjectIDFromHex(customerID)
+	updateRequest.ID = customerObjectID
+	updateRequest.UpdatedAt = time.Now()
+
+	fmt.Println(updateRequest)
+	result = dto.ResultResponse{
+		Message: "Customer Updated",
 	}
 	return result, nil
 }
