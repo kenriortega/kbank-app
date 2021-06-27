@@ -27,6 +27,7 @@ func Start() {
 	// define routes
 	r.HandleFunc("/customers/{customerID}/status", ch.UpdateStatusCustomer).Methods(http.MethodPatch)
 	r.HandleFunc("/customers/{customerID}", ch.DeleteCustomer).Methods(http.MethodDelete)
+	r.HandleFunc("/customers/{customerID}", ch.GetCustomer).Methods(http.MethodGet)
 	r.HandleFunc("/customers", ch.GetAllCustomers).Methods(http.MethodGet)
 	r.HandleFunc("/customers", ch.CreateCustomer).Methods(http.MethodPost)
 

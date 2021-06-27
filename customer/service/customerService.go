@@ -11,6 +11,7 @@ import (
 
 type CustomerService interface {
 	GetAllConstumer(string) ([]dto.CustomerResponse, *errs.AppError)
+	GetCustomer(string) (dto.CustomerResponse, *errs.AppError)
 	CreateCustomer(dto.CustomerRequest) (dto.ResultResponse, *errs.AppError)
 	DeleteCustomer(string) (dto.ResultResponse, *errs.AppError)
 	UpdateCustomerByStatus(string, dto.UpdateCustomerRequest) (dto.ResultResponse, *errs.AppError)
@@ -28,6 +29,16 @@ func (s DefaultCustomerService) GetAllConstumer(status string) (response []dto.C
 	for _, c := range customers {
 		response = append(response, c.ToDto())
 	}
+	return response, nil
+}
+func (s DefaultCustomerService) GetCustomer(customerID string) (response dto.CustomerResponse, err *errs.AppError) {
+
+	customerObjectID, _ := primitive.ObjectIDFromHex(customerID)
+	customer, err := s.repo.FindOne(customerObjectID)
+	if err != nil {
+		return response, err
+	}
+	response = customer.ToDto()
 	return response, nil
 }
 func (s DefaultCustomerService) CreateCustomer(newCustomer dto.CustomerRequest) (result dto.ResultResponse, err *errs.AppError) {

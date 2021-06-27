@@ -62,6 +62,24 @@ func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError
 
 }
 
+//GetIssuesByCode - Get All issues for collection
+func (d CustomerRepositoryDb) FindOne(customerID primitive.ObjectID) (Customer, *errs.AppError) {
+	result := Customer{}
+	//Define filter query for fetching specific document from collection
+	filter := bson.D{primitive.E{Key: "_id", Value: customerID}}
+	//Get MongoDB connection using
+
+	//Create a handle to the respective collection in the database.
+	collection := d.client.Database(DB).Collection(CUSTOMERS)
+	//Perform FindOne operation & validate against the error.
+	err := collection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		return result, errs.NotFoundError
+	}
+	//Return result without any error.
+	return result, nil
+}
+
 //CreateOne - Insert a new document in the collection.
 func (d CustomerRepositoryDb) CreateOne(customer Customer) (*mongo.InsertOneResult, *errs.AppError) {
 	customer.ID = primitive.NewObjectID()
