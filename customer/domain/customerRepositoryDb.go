@@ -2,8 +2,6 @@ package customer
 
 import (
 	"context"
-	"os"
-	"sync"
 	"time"
 
 	"github.org/kbank/internal/errs"
@@ -11,11 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-//Used to execute client creation procedure only once.
-var mongoOnce sync.Once
 
 //I have used below constants just to hold required database config's.
 const (
@@ -182,28 +176,8 @@ func (d CustomerRepositoryDb) UpdateStatusByCustomerID(
 	return result, nil
 }
 
-//NewCustomerRepositoryDb - Return mongodb connection to work with
-func NewCustomerRepositoryDb() CustomerRepositoryDb {
-	var clientInstance *mongo.Client
-	//Perform connection creation operation only once.
-	mongoOnce.Do(func() {
-		// Set client options
-		clientOptions := options.Client().ApplyURI(os.Getenv("DATABASE_URL"))
-		// Connect to MongoDB
-		client, err := mongo.Connect(context.TODO(), clientOptions)
-		if err != nil {
-			logger.Error(err.Error())
+func NewCustomerRepositoryDb(clientInstance *mongo.Client) CustomerRepositoryDb {
 
-			panic(err)
-		}
-		// Check the connection
-		err = client.Ping(context.TODO(), nil)
-		if err != nil {
-			logger.Error(err.Error())
-			panic(err)
-		}
-		clientInstance = client
-	})
 	return CustomerRepositoryDb{
 		client: clientInstance,
 	}
