@@ -41,7 +41,7 @@ func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError
 	cur, findError := collection.Find(context.TODO(), filter)
 	if findError != nil {
 		logger.Error(findError.Error())
-		return customers, errs.NewNotFoundError("Customer Not found")
+		return customers, errs.NotFoundError
 	}
 	//Map result to slice
 	for cur.Next(context.TODO()) {
@@ -56,7 +56,7 @@ func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError
 	// once exhausted, close the cursor
 	cur.Close(context.TODO())
 	if len(customers) == 0 {
-		return customers, errs.NewNotContentError("no documents")
+		return customers, errs.NoDocumentsError
 	}
 	return customers, nil
 
@@ -74,7 +74,7 @@ func (d CustomerRepositoryDb) CreateOne(customer Customer) (*mongo.InsertOneResu
 	result, err := collection.InsertOne(context.TODO(), customer)
 	if err != nil {
 		logger.Error(err.Error())
-		return nil, errs.NewUnexpectedError("Unexpected error on insert document")
+		return nil, errs.InsertOneError
 	}
 	//Return success without any error.
 	return result, nil

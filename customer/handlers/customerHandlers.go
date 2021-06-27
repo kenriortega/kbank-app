@@ -3,10 +3,10 @@ package customer
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 
 	dto "github.org/kbank/customer/dto"
 	service "github.org/kbank/customer/service"
+	"github.org/kbank/internal/errs"
 )
 
 type CustomerHandler struct {
@@ -18,7 +18,7 @@ func (ch *CustomerHandler) GetAllCustomers(w http.ResponseWriter, r *http.Reques
 	status := r.URL.Query().Get("status")
 	customers, err := ch.Service.GetAllConstumer(status)
 	if err != nil {
-		if strings.Contains(err.Message, "no documents") {
+		if err.Message == errs.NoDocumentsError.Message {
 			writeResponse(w, err.Code, err)
 		}
 	} else {
@@ -34,7 +34,7 @@ func (ch *CustomerHandler) CreateCustomer(w http.ResponseWriter, r *http.Request
 	result, err := ch.Service.CreateCustomer(newCustomer)
 
 	if err != nil {
-		if strings.Contains(err.Message, "no documents") {
+		if err.Message == errs.InsertOneError.Message {
 			writeResponse(w, err.Code, err)
 		}
 	} else {

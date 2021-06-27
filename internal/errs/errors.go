@@ -9,18 +9,20 @@ type AppError struct {
 	Message string `json:"message"`
 }
 
-func NewNotFoundError(message string) *AppError {
-	return &AppError{
-		Message: message,
-		Code:    http.StatusNotFound,
-	}
+var NoDocumentsError = &AppError{
+	Message: "No documents",
+	Code:    http.StatusNoContent,
 }
-func NewNotContentError(message string) *AppError {
-	return &AppError{
-		Message: message,
-		Code:    http.StatusNoContent,
-	}
+var NotFoundError = &AppError{
+	Message: "Document Not found",
+	Code:    http.StatusNoContent,
 }
+
+var InsertOneError = &AppError{
+	Message: "Unexpected error on insert document",
+	Code:    http.StatusBadRequest,
+}
+
 func NewUnexpectedError(message string) *AppError {
 	return &AppError{
 		Message: message,
