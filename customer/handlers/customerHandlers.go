@@ -15,7 +15,7 @@ type CustomerHandler struct {
 }
 
 func (ch *CustomerHandler) GetAllCustomers(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/json")
 	status := r.URL.Query().Get("status")
 	customers, err := ch.Service.GetAllConstumer(status)
 	if err != nil {
@@ -68,7 +68,7 @@ func (ch *CustomerHandler) UpdateStatusCustomer(w http.ResponseWriter, r *http.R
 }
 
 func (ch *CustomerHandler) DeleteCustomer(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+
 	params := mux.Vars(r)
 	result, err := ch.Service.DeleteCustomer(params["customerID"])
 	if err != nil {
@@ -79,6 +79,7 @@ func (ch *CustomerHandler) DeleteCustomer(w http.ResponseWriter, r *http.Request
 }
 
 func writeResponse(w http.ResponseWriter, code int, data interface{}) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(code)
 	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(data)
