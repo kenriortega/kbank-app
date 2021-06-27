@@ -36,4 +36,8 @@ func (c Customer) ToDto() dto.CustomerResponse {
 type CustomerRepository interface {
 	FindAll(status string) ([]Customer, *errs.AppError)
 	CreateOne(Customer) (*mongo.InsertOneResult, *errs.AppError)
+	CreateMany(list []Customer) (*mongo.InsertManyResult, *errs.AppError)
+	DeleteOne(primitive.ObjectID) (*mongo.DeleteResult, *errs.AppError)
+	DeleteAll() (*mongo.DeleteResult, *errs.AppError)
+	UpdateStatusByCustomerID(customerID primitive.ObjectID, status string, updatedAt time.Time) (*mongo.UpdateResult, *errs.AppError)
 }
