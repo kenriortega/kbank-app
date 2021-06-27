@@ -43,7 +43,6 @@ func (ch *CustomerHandler) CreateCustomer(w http.ResponseWriter, r *http.Request
 	}
 }
 
-// TODO: Check work flow
 func (ch *CustomerHandler) UpdateStatusCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
@@ -57,7 +56,6 @@ func (ch *CustomerHandler) UpdateStatusCustomer(w http.ResponseWriter, r *http.R
 	}
 }
 
-// TODO: Check work flow
 func (ch *CustomerHandler) DeleteCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)

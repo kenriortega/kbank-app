@@ -12,11 +12,11 @@ content-type: application/json
 }
 
 ###
-DELETE http://localhost:8000/customers/60d7955d6512c935b5e8d81c
+DELETE http://localhost:8000/customers/60d7c9a95ef90f972b2c52dc
 content-type: application/json
 
 ###
-PATCH http://localhost:8000/customers/60d7955d6512c935b5e8d81c/status
+PATCH http://localhost:8000/customers/60d7c9a95ef90f972b2c52dc/status
 content-type: application/json
 
 {
