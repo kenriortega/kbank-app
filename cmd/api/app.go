@@ -22,8 +22,12 @@ func Start() {
 	port := os.Getenv("PORT")
 	r := mux.NewRouter()
 
+	mongoDbClient := GetMongoDbClient()
+
+	// Customers Services
+	customerRepository := domain.NewCustomerRepositoryDb(mongoDbClient)
 	ch := handlers.CustomerHandler{
-		Service: service.NewCustomerService(domain.NewCustomerRepositoryDb()),
+		Service: service.NewCustomerService(customerRepository),
 	}
 	// define routes for customers
 	customersRoutes := r.PathPrefix("/customers").Subrouter()
@@ -32,6 +36,7 @@ func Start() {
 	customersRoutes.HandleFunc("/{customerID}", ch.GetCustomer).Methods(http.MethodGet)
 	customersRoutes.HandleFunc("/", ch.GetAllCustomers).Methods(http.MethodGet)
 	customersRoutes.HandleFunc("/", ch.CreateCustomer).Methods(http.MethodPost)
+	// End Customer service
 
 	// middleware
 	r.Use(LogginMiddleware)
