@@ -8,9 +8,12 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
-	domain "github.org/kbank/customer/domain"
-	handlers "github.org/kbank/customer/handlers"
-	service "github.org/kbank/customer/service"
+	accountDomain "github.org/kbank/account/domain"
+	accountHandler "github.org/kbank/account/handlers"
+	accountService "github.org/kbank/account/service"
+	customerDomain "github.org/kbank/customer/domain"
+	customerHandler "github.org/kbank/customer/handlers"
+	customerService "github.org/kbank/customer/service"
 	"github.org/kbank/internal/logger"
 )
 
@@ -25,9 +28,9 @@ func Start() {
 	mongoDbClient := GetMongoDbClient()
 
 	// Customers Services
-	customerRepository := domain.NewCustomerRepositoryDb(mongoDbClient)
-	ch := handlers.CustomerHandler{
-		Service: service.NewCustomerService(customerRepository),
+	customerRepository := customerDomain.NewCustomerRepositoryDb(mongoDbClient)
+	ch := customerHandler.CustomerHandler{
+		Service: customerService.NewCustomerService(customerRepository),
 	}
 	// define routes for customers
 	customersRoutes := r.PathPrefix("/customers").Subrouter()
@@ -38,6 +41,13 @@ func Start() {
 	customersRoutes.HandleFunc("/", ch.CreateCustomer).Methods(http.MethodPost)
 	// End Customer service
 
+	// define routes for accounts
+	accountRepository := accountDomain.NewAccountRepositoryDb(mongoDbClient)
+	ah := accountHandler.AccountHandler{
+		Service: accountService.NewAccountService(accountRepository),
+	}
+	accoutsRoutes := r.PathPrefix("/accounts").Subrouter()
+	accoutsRoutes.HandleFunc("/", ah.CreateAccount).Methods(http.MethodPost)
 	// middleware
 	r.Use(LogginMiddleware)
 	r.Use(mux.CORSMethodMiddleware(r))
