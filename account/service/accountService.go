@@ -10,9 +10,21 @@ import (
 
 type AccountService interface {
 	CreateAccount(dto.AccountRequest) (dto.ResultResponse, *errs.AppError)
+	GetAllAccount() ([]dto.AccountResponse, *errs.AppError)
 }
 type DefaultAccountService struct {
 	repo domain.AccountRepository
+}
+
+func (s DefaultAccountService) GetAllAccount() (response []dto.AccountResponse, err *errs.AppError) {
+	accounts, err := s.repo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+	for _, a := range accounts {
+		response = append(response, a.ToDto())
+	}
+	return response, nil
 }
 
 func (s DefaultAccountService) CreateAccount(newAccount dto.AccountRequest) (result dto.ResultResponse, err *errs.AppError) {

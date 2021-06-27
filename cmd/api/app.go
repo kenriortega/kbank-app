@@ -47,7 +47,10 @@ func Start() {
 		Service: accountService.NewAccountService(accountRepository),
 	}
 	accoutsRoutes := r.PathPrefix("/accounts").Subrouter()
+	accoutsRoutes.HandleFunc("/", ah.GetAllAccount).Methods(http.MethodGet)
 	accoutsRoutes.HandleFunc("/", ah.CreateAccount).Methods(http.MethodPost)
+	// End Accounts service
+
 	// middleware
 	r.Use(LogginMiddleware)
 	r.Use(mux.CORSMethodMiddleware(r))

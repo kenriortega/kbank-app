@@ -3,6 +3,7 @@ package account
 import (
 	"time"
 
+	dto "github.org/kbank/account/dto"
 	"github.org/kbank/internal/errs"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -19,6 +20,20 @@ type Account struct {
 	UpdatedAt   time.Time          `bson:"updated_at"`
 }
 
+func (a Account) ToDto() dto.AccountResponse {
+	return dto.AccountResponse{
+		ID:          a.ID,
+		CustomerID:  a.CustomerID,
+		OpeningDate: a.OpeningDate,
+		AccountType: a.AccountType,
+		Amount:      a.Amount,
+		Status:      a.Status,
+		CreatedAt:   a.CreatedAt,
+		UpdatedAt:   a.UpdatedAt,
+	}
+}
+
 type AccountRepository interface {
+	FindAll() ([]Account, *errs.AppError)
 	CreateOne(Account) (*mongo.InsertOneResult, *errs.AppError)
 }

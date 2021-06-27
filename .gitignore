@@ -9,7 +9,7 @@
 *.dll
 *.so
 *.dylib
-
+kbank
 # Test binary, built with `go test -c`
 *.test
 
@@ -25,5 +25,6 @@
 
 .vscode
 seed/
+
 
 # End of https://www.toptal.com/developers/gitignore/api/go

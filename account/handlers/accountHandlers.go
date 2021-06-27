@@ -13,6 +13,19 @@ type AccountHandler struct {
 	Service service.AccountService
 }
 
+func (ah *AccountHandler) GetAllAccount(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	customers, err := ah.Service.GetAllAccount()
+	if err != nil {
+		if err.Message == errs.NoDocumentsError.Message {
+			writeResponse(w, err.Code, err)
+		}
+	} else {
+		writeResponse(w, http.StatusOK, customers)
+	}
+
+}
+
 func (ah *AccountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var newAccount dto.AccountRequest
