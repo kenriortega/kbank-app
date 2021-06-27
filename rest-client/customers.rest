@@ -1,8 +1,8 @@
-GET http://localhost:8000/customers
+GET http://localhost:8000/customers/
 ###
 GET http://localhost:8000/customers/60d7955d6512c935b5e8d81c
 ###
-POST http://localhost:8000/customers HTTP/1.1
+POST http://localhost:8000/customers/ HTTP/1.1
 content-type: application/json
 
 {
