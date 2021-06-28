@@ -1,9 +1,12 @@
 package api
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	authDto "github.org/kbank/auth/dto"
 
@@ -11,8 +14,13 @@ import (
 	"github.org/kbank/internal/logger"
 )
 
-var hs = jwt.NewHS256([]byte("secret"))
+var (
+	hs = jwt.NewHS256([]byte("secret"))
+)
 
+type ResponseMiddleware struct {
+	Message string `json:"message"`
+}
 type Middleware func(http.HandlerFunc) http.HandlerFunc
 
 func LogginMiddleware(next http.Handler) http.Handler {
@@ -46,14 +54,47 @@ func VerifyJWT() Middleware {
 
 		// Define the http.HandlerFunc
 		return func(w http.ResponseWriter, r *http.Request) {
+			var response ResponseMiddleware
 			var header = r.Header.Get("Authorization")
+			now := time.Now()
+			if !strings.HasPrefix(header, "Bearer ") {
+				response.Message = "Format is Authorization: Bearer [token]"
+				fmt.Println(response)
+				writeResponse(w, http.StatusBadRequest, response)
+				return
+			}
 			token := strings.Split(header, " ")[1]
 			pl := authDto.JWTPayload{}
-			hd, err := jwt.Verify([]byte(token), hs, &pl)
-			if err != nil {
+			expValidator := jwt.ExpirationTimeValidator(now)
+			validatePayload := jwt.ValidatePayload(&pl.Payload, expValidator)
+			_, err := jwt.Verify([]byte(token), hs, &pl, validatePayload)
+
+			if errors.Is(err, jwt.ErrExpValidation) {
 				logger.Error(err.Error())
+				response.Message = err.Error()
+				writeResponse(w, http.StatusForbidden, response)
+				return
 			}
-			fmt.Println(hd)
+			if errors.Is(err, jwt.ErrHMACVerification) {
+				logger.Error(err.Error())
+				response.Message = err.Error()
+				writeResponse(w, http.StatusForbidden, response)
+				return
+			}
+
+			// ACL for ROLES
+			switch pl.Role {
+			case "ADMIN":
+				f(w, r)
+				return
+
+			case "BASIC":
+				logger.Error("You don`t have permissions")
+				response.Message = "You don`t have permissions"
+				writeResponse(w, http.StatusUnauthorized, response)
+				return
+			}
+
 			// Call the next middleware/handler in chain
 			f(w, r)
 		}
@@ -66,4 +107,10 @@ func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
 		f = m(f)
 	}
 	return f
+}
+func writeResponse(w http.ResponseWriter, code int, data interface{}) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.WriteHeader(code)
+	w.Header().Add("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
 }
