@@ -1,0 +1,12 @@
+
+###
+GET http://localhost:8000/accounts/
+###
+POST http://localhost:8000/accounts/ HTTP/1.1
+content-type: application/json
+
+{
+  "customer_id": "60d7955d6512c935b5e8d81c",
+  "account_type": "sd",
+  "amount": 23424.23
+}

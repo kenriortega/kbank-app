@@ -1,5 +1,5 @@
 GET http://localhost:8000/customers/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCYW5rIiwic3ViIjoiU3lzdGVtQXBwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDAwIiwiZXhwIjoxNjU1OTI5ODk1LCJuYmYiOjE2MjQ4Mjc2OTUsImlhdCI6MTYyNDgyNTg5NSwianRpIjoiYXV0aC1zZXJ2ZXItMSIsIlVzZXJuYW1lIjoia2FsaXgiLCJSb2xlIjoiQkFTSUMifQ.6Tun2fwn0KbHALIWqTNObkuLmDq2MtPzI8EPVu_WAEE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCYW5rIiwic3ViIjoiU3lzdGVtQXBwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDAwIiwiZXhwIjoxNjI0ODk1MjA4LCJuYmYiOjE2MjQ4OTY0MDgsImlhdCI6MTYyNDg5NDYwOCwianRpIjoiYXV0aC1zZXJ2ZXItMSIsIlVzZXJuYW1lIjoia2FsaXgiLCJSb2xlIjoiQkFTSUMifQ.qM-ThytWubdfAdq_BKd6F50tZeYV4LtZ7OcK6Mrwl3E
 ###
 GET http://localhost:8000/customers/60d7955d6512c935b5e8d81c
 ###
@@ -25,34 +25,3 @@ content-type: application/json
   "status": "active"
 }
 
-
-
-###
-GET http://localhost:8000/accounts/
-###
-POST http://localhost:8000/accounts/ HTTP/1.1
-content-type: application/json
-
-{
-  "customer_id": "60d7955d6512c935b5e8d81c",
-  "account_type": "sd",
-  "amount": 23424.23
-}
-
-###
-POST http://localhost:8000/auth/register HTTP/1.1
-content-type: application/json
-
-{
-  "username": "kalix",
-  "password": "sd",
-  "role": "Basic"
-}
-###
-POST http://localhost:8000/auth/login HTTP/1.1
-content-type: application/json
-
-{
-  "username": "kalix",
-  "password": "sd"
-}
