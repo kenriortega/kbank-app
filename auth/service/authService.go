@@ -9,6 +9,7 @@ import (
 	dto "github.org/kbank/auth/dto"
 
 	"github.org/kbank/internal/errs"
+	"github.org/kbank/internal/logger"
 )
 
 var hs = jwt.NewHS256([]byte("secret"))
@@ -72,7 +73,7 @@ func (s DefaultAuthService) Login(authReq dto.LoginRequest) (response dto.LoginR
 
 	token, errToken := jwt.Sign(pl, hs)
 	if errToken != nil {
-		// ...
+		logger.Error(errToken.Error())
 	}
 
 	if err != nil {
