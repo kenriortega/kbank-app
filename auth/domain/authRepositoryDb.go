@@ -33,7 +33,7 @@ func NewAuthRepositoryDb(clientInstance *mongo.Client) AuthRepositoryDb {
 //CreateOne - Insert a new document in the collection.
 func (a AuthRepositoryDb) CreateOne(newUser User) (*mongo.InsertOneResult, *errs.AppError) {
 	newUser.ID = primitive.NewObjectID()
-	newUser.Role = "BASIC"
+
 	newUser.Password = cryptopass.HashAndSalt([]byte(newUser.Password))
 	newUser.CreatedAt = time.Now()
 	newUser.UpdatedAt = time.Now()
