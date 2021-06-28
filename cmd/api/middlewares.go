@@ -11,6 +11,7 @@ import (
 	authDto "github.org/kbank/auth/dto"
 
 	"github.com/gbrlsnchs/jwt/v3"
+	"github.com/gorilla/context"
 	"github.org/kbank/internal/logger"
 )
 
@@ -81,7 +82,7 @@ func VerifyJWT() Middleware {
 				writeResponse(w, http.StatusForbidden, response)
 				return
 			}
-
+			context.Set(r, "username", pl.Username)
 			// ACL for ROLES
 			switch pl.Role {
 			case "ADMIN":

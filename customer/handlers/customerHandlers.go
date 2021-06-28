@@ -2,8 +2,10 @@ package customer
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
+	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	dto "github.org/kbank/customer/dto"
 	service "github.org/kbank/customer/service"
@@ -18,6 +20,8 @@ func (ch *CustomerHandler) GetAllCustomers(w http.ResponseWriter, r *http.Reques
 	w.Header().Set("Content-Type", "application/json")
 	status := r.URL.Query().Get("status")
 	customers, err := ch.Service.GetAllConstumer(status)
+	name := context.Get(r, "username")
+	fmt.Println(name)
 	if err != nil {
 		if err.Message == errs.NoDocumentsError.Message {
 			writeResponse(w, err.Code, err)

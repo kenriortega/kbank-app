@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/gbrlsnchs/jwt/v3 v3.0.0 // indirect
+	github.com/gorilla/context v1.1.1
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.3.0
 	github.com/magefile/mage v1.11.0 // indirect
