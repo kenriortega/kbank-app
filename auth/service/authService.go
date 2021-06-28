@@ -1,6 +1,7 @@
 package account
 
 import (
+	"strings"
 	"time"
 
 	"github.com/gbrlsnchs/jwt/v3"
@@ -22,10 +23,17 @@ type DefaultAuthService struct {
 
 func (s DefaultAuthService) Register(newUser dto.RegisterRequest) (result dto.ResultResponse, err *errs.AppError) {
 
+	var role string
+	if newUser.Role == "" {
+		role = "BASIC"
+	} else {
+		role = newUser.Role
+	}
+
 	user := domain.User{
 		Username: newUser.Username,
 		Password: newUser.Password,
-		Role:     newUser.Role,
+		Role:     strings.ToUpper(role),
 	}
 
 	_, err = s.repo.CreateOne(user)
@@ -53,7 +61,7 @@ func (s DefaultAuthService) Login(authReq dto.LoginRequest) (response dto.LoginR
 			Issuer:         "Bank",
 			Subject:        "SystemApp",
 			Audience:       jwt.Audience{"http://localhost:8000"},
-			ExpirationTime: jwt.NumericDate(now.Add(24 * 30 * 12 * time.Hour)),
+			ExpirationTime: jwt.NumericDate(now.Add(10 * time.Minute)),
 			NotBefore:      jwt.NumericDate(now.Add(30 * time.Minute)),
 			IssuedAt:       jwt.NumericDate(now),
 			JWTID:          "auth-server-1",
