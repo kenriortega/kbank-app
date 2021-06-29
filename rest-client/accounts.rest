@@ -1,8 +1,8 @@
 
 ###
-GET http://localhost:8000/accounts/
+GET http://localhost:8000/api/v1/accounts/
 ###
-POST http://localhost:8000/accounts/ HTTP/1.1
+POST http://localhost:8000/api/v1/accounts/ HTTP/1.1
 content-type: application/json
 
 {
@@ -10,3 +10,7 @@ content-type: application/json
   "account_type": "sd",
   "amount": 23424.23
 }
+
+###
+DELETE http://localhost:8000/api/v1/accounts/60d8abc2b293f6ae68356da0
+content-type: application/json

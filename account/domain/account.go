@@ -36,4 +36,5 @@ func (a Account) ToDto() dto.AccountResponse {
 type AccountRepository interface {
 	FindAll() ([]Account, *errs.AppError)
 	CreateOne(Account) (*mongo.InsertOneResult, *errs.AppError)
+	DeleteOne(primitive.ObjectID) (*mongo.DeleteResult, *errs.AppError)
 }

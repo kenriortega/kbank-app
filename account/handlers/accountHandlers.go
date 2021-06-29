@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	dto "github.org/kbank/account/dto"
 	service "github.org/kbank/account/service"
 	"github.org/kbank/internal/errs"
@@ -41,6 +42,23 @@ func (ah *AccountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
+// swagger:route DELETE /accounts/{customerID} accounts DeleteAccount
+// Delete an account
+//
+// responses:
+//	202: ResultResponse
+
+// Create handles DELETE requests to delete account
+func (ch *AccountHandler) DeleteAccount(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	result, err := ch.Service.DeleteAccount(params["accountID"])
+	if err != nil {
+		writeResponse(w, err.Code, err)
+	} else {
+		writeResponse(w, http.StatusAccepted, result)
+	}
+}
 func writeResponse(w http.ResponseWriter, code int, data interface{}) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(code)

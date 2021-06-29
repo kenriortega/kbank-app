@@ -53,6 +53,7 @@ func Start() {
 		Service: accountService.NewAccountService(accountRepository),
 	}
 	accoutsRoutes := r.PathPrefix("/api/v1/accounts").Subrouter()
+	accoutsRoutes.HandleFunc("/{accountID}", ah.DeleteAccount).Methods(http.MethodDelete)
 	accoutsRoutes.HandleFunc("/", ah.GetAllAccount).Methods(http.MethodGet)
 	accoutsRoutes.HandleFunc("/", ah.CreateAccount).Methods(http.MethodPost)
 	// End Accounts service

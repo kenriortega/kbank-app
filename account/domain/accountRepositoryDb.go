@@ -75,3 +75,21 @@ func (a AccountRepositoryDb) CreateOne(account Account) (*mongo.InsertOneResult,
 	//Return success without any error.
 	return result, nil
 }
+func (d AccountRepositoryDb) DeleteOne(accountID primitive.ObjectID) (*mongo.DeleteResult, *errs.AppError) {
+	//Define filter query for fetching specific document from collection
+	filter := bson.D{primitive.E{Key: "_id", Value: accountID}}
+	//Get MongoDB connection using
+
+	//Create a handle to the respective collection in the database.
+	collection := d.client.Database(DB).Collection(ACCOUNTS)
+
+	//Perform DeleteOne operation & validate against the error.
+	result, err := collection.DeleteOne(context.TODO(), filter)
+
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, errs.DeleteOneError
+	}
+	//Return success without any error.
+	return result, nil
+}

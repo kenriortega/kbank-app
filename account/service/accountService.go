@@ -11,6 +11,7 @@ import (
 type AccountService interface {
 	CreateAccount(dto.AccountRequest) (dto.ResultResponse, *errs.AppError)
 	GetAllAccount() ([]dto.AccountResponse, *errs.AppError)
+	DeleteAccount(string) (dto.ResultResponse, *errs.AppError)
 }
 type DefaultAccountService struct {
 	repo domain.AccountRepository
@@ -49,6 +50,28 @@ func (s DefaultAccountService) CreateAccount(newAccount dto.AccountRequest) (res
 	return result, nil
 }
 
+func (s DefaultAccountService) DeleteAccount(accountID string) (result dto.ResultResponse, err *errs.AppError) {
+
+	accountObjectID, _ := primitive.ObjectIDFromHex(accountID)
+	rs, err := s.repo.DeleteOne(accountObjectID)
+	if err != nil {
+		result = dto.ResultResponse{
+			Message: "0",
+		}
+		return result, err
+	}
+	if rs.DeletedCount == 0 {
+		result = dto.ResultResponse{
+			Message: "0",
+		}
+		return result, err
+	} else {
+		result = dto.ResultResponse{
+			Message: "1",
+		}
+		return result, nil
+	}
+}
 func NewAccountService(repository domain.AccountRepository) DefaultAccountService {
 	return DefaultAccountService{repo: repository}
 }
