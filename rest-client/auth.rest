@@ -1,7 +1,7 @@
 
 
 ###
-POST http://localhost:8000/auth/register HTTP/1.1
+POST http://localhost:8000/api/v1/auth/register HTTP/1.1
 content-type: application/json
 
 {
@@ -10,7 +10,7 @@ content-type: application/json
   "role": "admin"
 }
 ###
-POST http://localhost:8000/auth/login HTTP/1.1
+POST http://localhost:8000/api/v1/auth/login HTTP/1.1
 content-type: application/json
 
 {
