@@ -16,6 +16,11 @@ type CustomerHandler struct {
 	Service service.CustomerService
 }
 
+// swagger:route GET /customers/ customers GetAllCustomers
+// Return a list of customers from the database
+// responses:
+//	200: CustomersResponseWrapper
+//  204: NoContentResponseWrapper
 func (ch *CustomerHandler) GetAllCustomers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	status := r.URL.Query().Get("status")
@@ -29,8 +34,15 @@ func (ch *CustomerHandler) GetAllCustomers(w http.ResponseWriter, r *http.Reques
 	} else {
 		writeResponse(w, http.StatusOK, customers)
 	}
-
 }
+
+// swagger:route GET /customers/{customerID} customers GetCustomer
+// Return a customer from the database
+// responses:
+//	200: CustomerResponse
+//	204: NoContentResponseWrapper
+
+// ListSingle handles GET requests
 func (ch *CustomerHandler) GetCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
@@ -43,6 +55,13 @@ func (ch *CustomerHandler) GetCustomer(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// swagger:route POST /customers customers CreateCustomer
+// Create a new customer
+//
+// responses:
+//	201: ResultResponse
+
+// Create handles POST requests to add new customer
 func (ch *CustomerHandler) CreateCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var newCustomer dto.CustomerRequest
@@ -58,6 +77,13 @@ func (ch *CustomerHandler) CreateCustomer(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// swagger:route PATCH /customers/{customerID} customers UpdateStatusCustomer
+// Update a customer
+//
+// responses:
+//	202: ResultResponse
+
+// Create handles POST requests to add new customer
 func (ch *CustomerHandler) UpdateStatusCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
@@ -71,6 +97,13 @@ func (ch *CustomerHandler) UpdateStatusCustomer(w http.ResponseWriter, r *http.R
 	}
 }
 
+// swagger:route DELETE /customers/{customerID} customers DeleteCustomer
+// Delete a customer
+//
+// responses:
+//	202: ResultResponse
+
+// Create handles DELETE requests to add new customer
 func (ch *CustomerHandler) DeleteCustomer(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)

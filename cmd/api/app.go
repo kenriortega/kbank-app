@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	accountDomain "github.org/kbank/account/domain"
@@ -38,7 +39,7 @@ func Start() {
 		Service: customerService.NewCustomerService(customerRepository),
 	}
 	// define routes for customers
-	customersRoutes := r.PathPrefix("/customers").Subrouter()
+	customersRoutes := r.PathPrefix("/api/v1/customers").Subrouter()
 	customersRoutes.HandleFunc("/{customerID}/status", ch.UpdateStatusCustomer).Methods(http.MethodPatch)
 	customersRoutes.HandleFunc("/{customerID}", ch.DeleteCustomer).Methods(http.MethodDelete)
 	customersRoutes.HandleFunc("/{customerID}", ch.GetCustomer).Methods(http.MethodGet)
@@ -51,7 +52,7 @@ func Start() {
 	ah := accountHandler.AccountHandler{
 		Service: accountService.NewAccountService(accountRepository),
 	}
-	accoutsRoutes := r.PathPrefix("/accounts").Subrouter()
+	accoutsRoutes := r.PathPrefix("/api/v1/accounts").Subrouter()
 	accoutsRoutes.HandleFunc("/", ah.GetAllAccount).Methods(http.MethodGet)
 	accoutsRoutes.HandleFunc("/", ah.CreateAccount).Methods(http.MethodPost)
 	// End Accounts service
@@ -61,10 +62,17 @@ func Start() {
 	auh := authHandler.AuthHandler{
 		Service: authService.NewAuthService(authRepository),
 	}
-	authRoutes := r.PathPrefix("/auth").Subrouter()
+	authRoutes := r.PathPrefix("/api/v1/auth").Subrouter()
 	authRoutes.HandleFunc("/register", auh.Register).Methods(http.MethodPost)
 	authRoutes.HandleFunc("/login", auh.Login).Methods(http.MethodPost)
 	// End Accounts service
+
+	// swagger
+	// handler for documentation
+	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
+	sh := middleware.Redoc(opts, nil)
+	r.Handle("/docs", sh)
+	r.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
 	// middleware
 	r.Use(LogginMiddleware)

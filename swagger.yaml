@@ -1,0 +1,143 @@
+basePath: /v1
+consumes:
+- application/json
+definitions:
+  CustomerResponse:
+    properties:
+      _id:
+        $ref: '#/definitions/ObjectID'
+      city:
+        type: string
+        x-go-name: City
+      created_at:
+        format: date-time
+        type: string
+        x-go-name: CreatedAt
+      date_of_birth:
+        type: string
+        x-go-name: DateofBirth
+      name:
+        type: string
+        x-go-name: Name
+      status:
+        type: string
+        x-go-name: Status
+      updated_at:
+        format: date-time
+        type: string
+        x-go-name: UpdatedAt
+      zip_code:
+        type: string
+        x-go-name: Zipcode
+    type: object
+    x-go-package: github.org/kbank/customer/dto
+  ObjectID:
+    items:
+      format: uint8
+      type: integer
+    title: ObjectID is the BSON ObjectID type.
+    type: array
+    x-go-package: go.mongodb.org/mongo-driver/bson/primitive
+  ResultResponse:
+    properties:
+      message:
+        type: string
+        x-go-name: Message
+    type: object
+    x-go-package: github.org/kbank/customer/dto
+  UpdateCustomerRequest:
+    properties:
+      _id:
+        $ref: '#/definitions/ObjectID'
+      status:
+        type: string
+        x-go-name: Status
+      updated_at:
+        format: date-time
+        type: string
+        x-go-name: UpdatedAt
+    type: object
+    x-go-package: github.org/kbank/customer/dto
+host: 127.0.0.1
+info:
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+  version: 0.0.1
+paths:
+  /customers:
+    post:
+      description: Create a new customer
+      operationId: CreateCustomer
+      responses:
+        "201":
+          description: ResultResponse
+          schema:
+            $ref: '#/definitions/ResultResponse'
+      tags:
+      - customers
+  /customers/:
+    get:
+      description: Return a list of customers from the database
+      operationId: GetAllCustomers
+      responses:
+        "200":
+          $ref: '#/responses/CustomersResponseWrapper'
+        "204":
+          $ref: '#/responses/NoContentResponseWrapper'
+      tags:
+      - customers
+  /customers/{customerID}:
+    delete:
+      description: Delete a customer
+      operationId: DeleteCustomer
+      responses:
+        "202":
+          description: ResultResponse
+          schema:
+            $ref: '#/definitions/ResultResponse'
+      tags:
+      - customers
+    get:
+      description: Return a customer from the database
+      operationId: GetCustomer
+      responses:
+        "200":
+          $ref: '#/responses/CustomerResponse'
+        "204":
+          $ref: '#/responses/NoContentResponseWrapper'
+      tags:
+      - customers
+    patch:
+      description: Update a customer
+      operationId: UpdateStatusCustomer
+      responses:
+        "202":
+          description: ResultResponse
+          schema:
+            $ref: '#/definitions/ResultResponse'
+      tags:
+      - customers
+produces:
+- application/json
+responses:
+  CustomerResponse:
+    description: Data structure representing a single product
+    schema:
+      $ref: '#/definitions/CustomerResponse'
+  CustomersResponse:
+    description: A list of customers
+    schema:
+      items:
+        $ref: '#/definitions/CustomerResponse'
+      type: array
+  ErrorResponse:
+    description: Generic error message returned as a string
+    schema:
+      $ref: '#/definitions/ResultResponse'
+  NoContentResponse:
+    description: No content is returned by this API endpoint
+schemes:
+- http
+- https
+swagger: "2.0"
